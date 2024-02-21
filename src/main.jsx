@@ -8,8 +8,8 @@ import {
 } from "react-router-dom";
 
 import Layout from './components/Layout';
-import NuevoCliente from './pages/NuevoCliente';
-import Index, { loader as indexLoader} from './pages/Index';
+import NuevoCliente, { action as nuevoClienteAction } from './pages/NuevoCliente';
+import Index, { loader as clienteLoader} from './pages/Index';
 
 const router = createBrowserRouter([
   {
@@ -19,11 +19,12 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Index />,
-        loader: indexLoader
+        loader: clienteLoader
       },
       {
         path: "/clientes/nuevo",
-        element: <NuevoCliente />
+        element: <NuevoCliente />,
+        action: nuevoClienteAction
       }
     ]
   }

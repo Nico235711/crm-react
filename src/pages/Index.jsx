@@ -1,4 +1,5 @@
 import { useLoaderData } from "react-router-dom";
+import Cliente from "../components/Cliente";
 
 export const loader = () => {
   const clientes = [
@@ -46,7 +47,6 @@ export const loader = () => {
 const Index = () => {
   
   const clientes = useLoaderData()
-  console.log(clientes);
   
   return (
     <>
@@ -55,9 +55,29 @@ const Index = () => {
 
       {
         clientes.length ? (
-          <></>
+          // itero sobre mis clientes
+          <table className="bg-white shadow-md mt-5 table-auto w-full">
+            <thead className="bg-blue-800 text-white">
+              <tr>
+                <th className="p-2 border-r">Cliente</th>
+                <th className="p-2 border-r">Contacto</th>
+                <th className="p-2">Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {
+                clientes.map(cliente => (
+                  <Cliente 
+                    key={cliente.id}
+                    cliente={cliente}
+                  />
+                ))
+              }
+            </tbody>
+          </table>
           ) : (
-            <p>No hay clientes para mostrar</p>
+            <p className="text-center font-bold text-lg">No hay clientes para mostrar</p>
           )
       }
     </>
