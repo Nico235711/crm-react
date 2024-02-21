@@ -1,13 +1,40 @@
-import { Form, useNavigate } from "react-router-dom";
+import { Form, useNavigate, useActionData, redirect } from "react-router-dom";
 import Formulario from "../components/Formulario";
+import Error from "../components/Error";
+import { agregarCliente } from "../data/clientes";
 
-export function action() {
-  console.log("Desde action");
+export async function action({ request }) {
+
+  const formData = await request.formData()
+  const datos = Object.fromEntries(formData)
+  const email = formData.get("email")
+
+  // validación
+  const errores = []
+  if (Object.values(datos).includes("")) {
+    errores.push("Todos los campos son obligatorios")
+  }
+
+  let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
+
+  if (!regex.test(email)) {
+    errores.push("El email no es válido")
+  }
+  
+  // retornar datos si hay errores
+  if (Object.keys(errores).length) {
+    return errores
+  }
+
+  await agregarCliente(datos)
+
+  return redirect("/")
 }
 
 const NuevoCliente = () => {
 
   const navigate = useNavigate();
+  const errores = useActionData()
   
   return (
     <>
@@ -23,8 +50,15 @@ const NuevoCliente = () => {
         </button>
       </div>
 
-      <div className="bg-white md:w-3/4 rounded shadow-md mx-auto px-3 py-2 my-10">
-        <Form method="POST">
+      <div className="bg-white md:w-3/4 rounded shadow-md mx-auto px-5 py-10 my-10">
+
+        {
+          errores?.length && errores.map((error, i) => (
+            <Error key={i}>{error}</Error>
+          ))
+        }
+
+        <Form method="POST" noValidate>
           <Formulario />
           
           <input 
